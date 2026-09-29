@@ -1,0 +1,26 @@
+{
+  "name": "snake-rogue",
+  "version": "1.0.0",
+  "description": "蛇渊 · 贪食蛇 × Roguelike 网页游戏（原生 JS ES Modules + Canvas2D，零依赖、无构建）",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "game",
+    "snake",
+    "roguelike",
+    "canvas",
+    "html5-game",
+    "web-game"
+  ],
+  "author": "holy_nova",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holynova/snake-rogue.git"
+  },
+  "homepage": "https://holynova.github.io/snake-rogue/"
+}
