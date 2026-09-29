@@ -1,30 +1,52 @@
 # 蛇渊 · Snake Rogue
 
-贪食蛇 × Roguelike 网页游戏。实时逐格移动、咬击与毒液战斗、饥饿系统、FOV 迷雾 + 小地图、10 层地下城夺宝逃生。原生 JS ES Modules + Canvas2D，零依赖、无构建步骤。
+贪食蛇 × Roguelike 网页游戏。原生 JS ES Modules + Canvas2D，零依赖、无构建步骤。
 
-**在线试玩**：<https://holynova.github.io/snake-rogue/>
-**源码仓库**：<https://github.com/holynova/snake-rogue>
+![screenshot](screenshot.png)
 
-手机扫码直接打开：
+## 在线游玩
 
-<img src="docs/qr.png" alt="扫码试玩" width="180">
+- GitHub Pages：<https://holynova.github.io/snake-rogue/>
+- 扫码直达：
 
-![标题页](docs/title.png)
-
-![游戏画面](docs/gameplay.png)
+![qrcode](qrcode.png)
 
 ## 本地运行
 
 ```bash
-npm start   # 打开 http://localhost:8080
+npm start
+# 打开 http://localhost:8080
 ```
+
+ES Modules 必须经 HTTP 访问，不能直接 file:// 打开。
 
 ## 操作
 
-方向键 / WASD 转向（可掉头）· 空格 吐毒液 · P 暂停 · M 静音 · Enter 开始 · R 重开
+| 按键 | 作用 |
+| --- | --- |
+| 方向键 / WASD | 转向（可缓冲多步，允许掉头） |
+| 空格 | 吐毒液（3 槽，随时间回复） |
+| P / Esc | 暂停 |
+| M | 静音 |
+| Enter | 开始 / 确认 |
+| R | 死亡后重开 |
 
-撞墙停住不掉血；吃苹果长身体回饥饿；第 10 层拿到圣物即胜利。死亡后按 R 重开，自动记录最高分。
+## 玩法
 
-## 素材与许可
+- 实时逐格移动，撞墙停住（不掉血，但敌人仍在行动）。
+- 头咬敌人：击杀 → 吃掉 +1 身长 + 分；未死 → 反伤 + 击退。
+- 敌人把蛇身当实体障碍，绕行逼近。
+- 吃苹果长身体、回饥饿；饥饿归零周期掉血。
+- 半径 9 视线遮挡 + 已探索变暗记忆 + 小地图。
+- 共 10 层，第 10 层拿圣物逃出生天。永久死亡，记录最高分。
 
-地图/音效：Kenney（Tiny Dungeon、RPG Audio，CC0）；BGM：8-bit Perilous Dungeon（CC0）。蛇、苹果、金币、圣物为程序化绘制。代码 MIT。
+## 素材（全部 CC0）
+
+- 地牢图块：[Kenney — Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon)
+- 音效：[Kenney — RPG Audio](https://kenney.nl/assets/rpg-audio)
+- BGM：[8-bit Perilous Dungeon](https://opengameart.org/content/8-bit-perilous-dungeon)（CC0）
+- 蛇、苹果、金币、圣物为程序化绘制。
+
+## 项目地址
+
+<https://github.com/holynova/snake-rogue>
