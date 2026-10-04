@@ -1,0 +1,14 @@
+.git/
+node_modules/
+.wrangler/
+.github/
+.env*
+.dev.vars*
+*.md
+package*.json
+wrangler*
+server.js
+docs/
+screenshot.png
+qrcode.png
+assets/readme/

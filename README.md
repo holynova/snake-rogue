@@ -35,3 +35,5 @@ npx --yes wrangler@4.128.0 deploy --config wrangler.jsonc
 ```
 
 从 `master` 同一提交在本地手动发布到Cloudflare Workers。正式地址：[https://snake-rogue.xiaosang.cc/](https://snake-rogue.xiaosang.cc/)。
+
+游戏图块与音效使用Kenney Tiny Dungeon / RPG Audio；背景音乐素材保留在 `assets/`，使用前请阅读相应素材的授权文件。
