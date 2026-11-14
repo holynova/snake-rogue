@@ -62,20 +62,30 @@ export function drawTitle(ctx, time) {
   );
 
   const blink = Math.floor(time * 2) % 2 === 0;
+  // Touch devices get touch instructions; the keyboard lines would be useless.
+  const touch = typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(pointer: coarse)').matches;
   centered(
     ctx,
-    '按  Enter  开始',
+    touch ? '点下方 开始 进入地牢' : '按  Enter  或空格  开始',
     VIEW_H * 0.56,
     `bold 26px ${FONT}`,
     blink ? COLORS.accent : 'rgba(232,193,90,0.35)'
   );
 
-  const lines = [
-    '方向键 / WASD 移动 · 会吞掉自己身后的空间掉头',
-    '空格 吐毒液 · 撞墙会停住但不掉血',
-    '吃苹果回饱食度并变长 · 饥饿归零会持续掉血',
-    `走下楼梯深入地底 · 第 ${MAX_FLOOR} 层拿到圣物即胜利`,
-    'P 暂停 · M 静音 · 死亡后按 R 重开',
+  const lines = touch ? [
+    '滑动屏幕转向，点击下方按钮吐毒液或暂停',
+    '撞墙会停住但不掉血，地刺陷阱扣 1 点生命',
+    '吃苹果回 30 饱食度并变长，饥饿归零会持续掉血',
+    `走下楼梯深入地底，第 ${MAX_FLOOR} 层拿到圣物即胜利`,
+  ] : [
+    '方向键 / WASD 移动，按反方向可后退掉头',
+    '空格吐毒液（伤害 2，约 7 秒回复 1 点）',
+    '撞墙会停住但不掉血，地刺陷阱扣 1 点生命',
+    '吃苹果回 30 饱食度并变长，饥饿归零会持续掉血',
+    `走下楼梯深入地底，第 ${MAX_FLOOR} 层拿到圣物即胜利`,
+    'P 暂停，M 静音，死亡后按 R 重开',
   ];
   lines.forEach((t, i) => {
     centered(ctx, t, VIEW_H * 0.66 + i * 24, `14px ${FONT}`, COLORS.text);
@@ -83,7 +93,7 @@ export function drawTitle(ctx, time) {
 
   centered(
     ctx,
-    'Kenney 素材 · CC0',
+    'Kenney 素材（CC0）',
     VIEW_H * 0.94,
     `12px ${FONT}`,
     'rgba(127,132,153,0.7)'
@@ -92,20 +102,27 @@ export function drawTitle(ctx, time) {
 
 export function drawPause(ctx, world) {
   overlay(ctx, 0.66);
-  panelBox(ctx, 420, 220);
-  centered(ctx, '暂 停', VIEW_H / 2 - 62, `bold 40px ${FONT}`, '#eaf6ea');
-  centered(ctx, `第 ${world.floor} 层 · ${world.score} 分`, VIEW_H / 2 - 12, `16px ${FONT}`, COLORS.text);
+  panelBox(ctx, 420, 260);
+  centered(ctx, '暂 停', VIEW_H / 2 - 84, `bold 40px ${FONT}`, '#eaf6ea');
+  centered(ctx, `第 ${world.floor} 层，${world.score} 分`, VIEW_H / 2 - 34, `16px ${FONT}`, COLORS.text);
   centered(
     ctx,
     '按  P  或  Esc  继续',
-    VIEW_H / 2 + 36,
+    VIEW_H / 2 + 16,
     `bold 18px ${FONT}`,
     COLORS.accent
   );
   centered(
     ctx,
-    'M 静音 · 蛇在等你',
-    VIEW_H / 2 + 76,
+    'M 静音，蛇在等你',
+    VIEW_H / 2 + 58,
+    `13px ${FONT}`,
+    COLORS.textDim
+  );
+  centered(
+    ctx,
+    'Q 放弃本局回标题（最高分会保存）',
+    VIEW_H / 2 + 96,
     `13px ${FONT}`,
     COLORS.textDim
   );
@@ -118,10 +135,12 @@ function resultPanel(ctx, world, title, titleColor, note) {
   centered(ctx, note, y + 104, `15px ${FONT}`, COLORS.textDim);
   centered(ctx, `抵达第 ${world.floor} 层`, y + 146, `16px ${FONT}`, COLORS.text);
   centered(ctx, `本局得分  ${world.score}`, y + 178, `bold 22px ${FONT}`, COLORS.accent);
-  const isBest = world.score >= world.best && world.score > 0;
+  // newBest is set by saveBest() only when this run actually beat the old
+  // best; comparing against the already-updated best flagged ties as records.
+  const isBest = !!world.newBest && world.score > 0;
   centered(
     ctx,
-    isBest ? `新纪录！  历史最高 ${world.best}` : `历史最高 ${world.best}`,
+    isBest ? `新纪录！  历史最高 ${world.best} 分` : `历史最高 ${world.best} 分`,
     y + 212,
     `14px ${FONT}`,
     isBest ? COLORS.accent : COLORS.textDim
@@ -129,7 +148,7 @@ function resultPanel(ctx, world, title, titleColor, note) {
   const blink = Math.floor(performance.now() / 500) % 2 === 0;
   centered(
     ctx,
-    blink ? '按  R  再来一局 ·  Enter  返回标题' : ' ',
+    blink ? '按  R  再来一局，Enter  返回标题' : ' ',
     y + 256,
     `bold 15px ${FONT}`,
     COLORS.text

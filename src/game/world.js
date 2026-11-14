@@ -21,6 +21,7 @@ export class World {
     } catch (_) {}
     this.best = storedBest;
     this.state = 'play';
+    this.newBest = false;
     this.deadReason = '';
     this.ticks = 0;
     this.msgs = [];
@@ -36,6 +37,7 @@ export class World {
   saveBest() {
     if (this.score > this.best) {
       this.best = this.score;
+      this.newBest = true;
       try {
         localStorage.setItem(BEST_KEY, String(this.best));
       } catch (_) {}
