@@ -71,7 +71,7 @@ export function drawHUD(ctx, world) {
   ctx.strokeRect(hx + 0.5, hy + 0.5, hw - 1, hh - 1);
   ctx.font = `11px ${FONT}`;
   ctx.fillStyle = COLORS.textDim;
-  ctx.fillText('饱食', hx + hw + 8, hy - 1);
+  ctx.fillText(`饱食 ${s.hunger}`, hx + hw + 8, hy - 1);
 
   ctx.fillStyle = COLORS.textDim;
   ctx.fillText('毒液', 24, 78);
@@ -99,7 +99,7 @@ export function drawHUD(ctx, world) {
   ctx.fillText(`${world.score} 分`, VIEW_W - 24, 44);
   ctx.font = `12px ${FONT}`;
   ctx.fillStyle = COLORS.textDim;
-  ctx.fillText(`最高 ${world.best}`, VIEW_W - 24, 70);
+  ctx.fillText(`最高 ${world.best} 分`, VIEW_W - 24, 70);
   ctx.textAlign = 'left';
 
   const logX = 16;
@@ -118,7 +118,7 @@ export function drawHUD(ctx, world) {
 
   ctx.font = `11px ${FONT}`;
   ctx.fillStyle = 'rgba(127,132,153,0.7)';
-  ctx.fillText('P 暂停 · M 静音', 16, VIEW_H - 14 - 0);
+  ctx.fillText('P 暂停，M 静音', 16, VIEW_H - 14 - 0);
 
   ctx.restore();
 }
@@ -159,4 +159,11 @@ function drawMinimap(ctx, world) {
   const head = world.snake.cells[0];
   ctx.fillStyle = COLORS.snakeHead;
   ctx.fillRect(ox + head.x * sc - 1, oy + head.y * sc - 1, sc + 2, sc + 2);
+
+  // Legend: without it the minimap's coloured dots are unexplained.
+  ctx.font = `11px ${FONT}`;
+  ctx.fillStyle = COLORS.textDim;
+  ctx.textAlign = 'right';
+  ctx.fillText('金=出口 红=敌人 绿=自己', ox + w + 6, oy - 20);
+  ctx.textAlign = 'left';
 }

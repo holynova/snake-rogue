@@ -30,6 +30,7 @@ const audio = new AudioSys();
 if (!autotest) audio.init();
 const input = new Input();
 input.attach(window);
+input.attachTouch(canvas);
 const cam = new Camera(VIEW_W, VIEW_H);
 
 let atlas = null;
@@ -74,6 +75,13 @@ function handleTaps() {
     if (screen === 'pause') {
       if (code === 'KeyP' || code === 'Escape' || code === 'Enter') {
         screen = 'play';
+        audio.play('ui');
+      } else if (code === 'KeyQ') {
+        // Abandon the run, but keep the best score — nothing persistent is
+        // lost, so no confirmation dialog is needed.
+        if (world) world.saveBest();
+        world = null;
+        screen = 'title';
         audio.play('ui');
       }
       continue;
@@ -168,8 +176,46 @@ function stepGame() {
   world.tick();
 }
 
+// Touch buttons (shown only on coarse pointers via CSS) reuse the tap queue,
+// so they flow through exactly the same handlers as the keyboard.
+const touchUI = document.getElementById('touch-ui');
+const touchBtns = {
+  start: document.getElementById('touch-start'),
+  spit: document.getElementById('touch-spit'),
+  pause: document.getElementById('touch-pause'),
+  restart: document.getElementById('touch-restart'),
+  title: document.getElementById('touch-title'),
+};
+let lastTouchScreen = null;
+function syncTouchUI() {
+  if (!touchUI || screen === lastTouchScreen) return;
+  lastTouchScreen = screen;
+  const show = (el, on) => { if (el) el.style.display = on ? '' : 'none'; };
+  show(touchBtns.start, screen === 'title');
+  show(touchBtns.spit, screen === 'play');
+  show(touchBtns.pause, screen === 'play' || screen === 'pause');
+  if (touchBtns.pause) touchBtns.pause.textContent = screen === 'pause' ? '继续' : '暂停';
+  show(touchBtns.restart, screen === 'dead' || screen === 'win');
+  show(touchBtns.title, screen === 'pause' || screen === 'dead' || screen === 'win');
+}
+function bindTouch(btn, code) {
+  if (!btn) return;
+  btn.addEventListener('click', () => { input.taps.push(code); });
+}
+bindTouch(touchBtns.start, 'Enter');
+bindTouch(touchBtns.spit, 'Space');
+bindTouch(touchBtns.pause, 'KeyP');
+bindTouch(touchBtns.restart, 'KeyR');
+if (touchBtns.title) {
+  touchBtns.title.addEventListener('click', () => {
+    // Pause uses Q (abandon run, keep best); results screens use Enter.
+    input.taps.push(screen === 'pause' ? 'KeyQ' : 'Enter');
+  });
+}
+
 function update(step) {
   handleTaps();
+  syncTouchUI();
   if (screen !== 'play' || !world) {
     input.dirQueue.length = 0;
     input.lastPushed = null;
